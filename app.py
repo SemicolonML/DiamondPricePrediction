@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template,jsonify
 from src.pipelines.prediction_pipeline import CustomData,PredictPipeline
+from src.pipelines.training_pipeline import TrainingPipeline
 
 application = Flask(__name__)
 
@@ -26,13 +27,15 @@ def predict_datapoint():
             clarity= request.form.get('clarity')
         )
 
+        train = TrainingPipeline()
+        train.train()
         final_new_data = data.get_data_as_datarframe()
         predict_Pipeline = PredictPipeline()
         pred = predict_Pipeline.predict(final_new_data)
 
         results = "₹"+" " +(round(pred[0],2).astype(str))
         return render_template('test.html',final_result = results)
-    
+
 
 
 if __name__ == "__main__":
